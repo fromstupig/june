@@ -120,16 +120,6 @@ async function setup(connection: web3.Connection, payer: web3.Keypair) {
     await addLiquidity(proxy, tokenMint)
 }
 
-async function swapJuneToSol(proxy: JunePoolProxy, user: web3.Keypair) {
-    const sentSignature = await proxy.swapJuneToSol({
-        amount: new BN(1_000_000_000),
-    });
-
-    console.log({
-        swapSignature: sentSignature,
-    })
-}
-
 async function main() {
     const connection = new web3.Connection(web3.clusterApiUrl("testnet"));
 
@@ -154,6 +144,7 @@ async function main() {
         preflightCommitment: "processed",
         commitment: "processed"
     });
+
     const program = new Program(IDL, new PublicKey(PROGRAM_ID), provider_);
     const proxy = new JunePoolProxy(program, userWallet);
 

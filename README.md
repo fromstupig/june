@@ -26,7 +26,7 @@ This is a script which generated a new account on Solana testnet, and use this a
 
 ```
 cd june-swapper-client
-EXPORT TOKEN_MINT=CG26EFdBr7DuBv91b39vm7vdBxdGhMjutT8wcm2BTaU
+mv .env.local .env
 npm install
 npm start
 ```
