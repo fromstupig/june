@@ -34,7 +34,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/bn.js", "npm:5.1.1"],\
             ["@types/chai", "npm:4.3.5"],\
             ["@types/mocha", "npm:9.1.1"],\
+            ["@types/node", "npm:20.3.2"],\
             ["chai", "npm:4.3.7"],\
+            ["dotenv", "npm:16.3.1"],\
             ["mocha", "npm:9.2.2"],\
             ["prettier", "npm:2.8.8"],\
             ["ts-mocha", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:10.0.0"],\
@@ -967,6 +969,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["dot-case", "npm:3.0.4"],\
             ["no-case", "npm:3.0.4"],\
             ["tslib", "npm:2.6.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["dotenv", [\
+        ["npm:16.3.1", {\
+          "packageLocation": "./.yarn/cache/dotenv-npm-16.3.1-e6d380a398-15d75e7279.zip/node_modules/dotenv/",\
+          "packageDependencies": [\
+            ["dotenv", "npm:16.3.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -2211,7 +2222,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/bn.js", "npm:5.1.1"],\
             ["@types/chai", "npm:4.3.5"],\
             ["@types/mocha", "npm:9.1.1"],\
+            ["@types/node", "npm:20.3.2"],\
             ["chai", "npm:4.3.7"],\
+            ["dotenv", "npm:16.3.1"],\
             ["mocha", "npm:9.2.2"],\
             ["prettier", "npm:2.8.8"],\
             ["ts-mocha", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:10.0.0"],\
