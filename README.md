@@ -3,8 +3,8 @@ This project is a simple smart contract which create a token (named JUNE) on Sol
 - Provide liquidity for both JUNE and SOL tokens.
 - Swap between JUNE and SOL at a constant price of 10. (1 SOL = 10 JUNEs).
 
-Program ID: `Es39nWkqB3pFEAaPFjq2UoiHpmQ2SqXjpxANrgvZzK7r` [Testnet](https://explorer.solana.com/address/Es39nWkqB3pFEAaPFjq2UoiHpmQ2SqXjpxANrgvZzK7r?cluster=testnet).
-\nToken Mint Address: `CG26EFdBr7DuBv91b39vm7vdBxdGhMjutT8wcm2BTaU`
+Program ID: `Es39nWkqB3pFEAaPFjq2UoiHpmQ2SqXjpxANrgvZzK7r` [Testnet](https://explorer.solana.com/address/Es39nWkqB3pFEAaPFjq2UoiHpmQ2SqXjpxANrgvZzK7r?cluster=testnet). \
+Token Mint Address: `CG26EFdBr7DuBv91b39vm7vdBxdGhMjutT8wcm2BTaU`
 
 ## Prerequisite
 - Rust v1.62.0 
