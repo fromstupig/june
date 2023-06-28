@@ -1,6 +1,12 @@
-import {initializeKeypair} from "./initializeKeypair"
+import {airdropSolIfNeeded, initializeKeypair} from "./initializeKeypair"
 import * as web3 from "@solana/web3.js"
-import {createMint, getOrCreateAssociatedTokenAccount, mintToChecked} from "@solana/spl-token";
+import {
+    createAssociatedTokenAccount,
+    createMint,
+    getAssociatedTokenAddress,
+    getOrCreateAssociatedTokenAccount,
+    mintToChecked
+} from "@solana/spl-token";
 import {PublicKey} from "@solana/web3.js";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import {AnchorProvider, BN, Program} from "@coral-xyz/anchor";
@@ -42,8 +48,7 @@ async function createJuneTokenAccount(
     return tokenAccount
 }
 
-async function initializePool(proxy: JunePoolProxy, juneToken: web3.PublicKey)
-{
+async function initializePool(proxy: JunePoolProxy, juneToken: web3.PublicKey) {
     const sentSignature = await proxy.initializePool({
         juneToken,
         swapRate: new BN(10),
@@ -115,12 +120,54 @@ async function setup(connection: web3.Connection, payer: web3.Keypair) {
     await addLiquidity(proxy, tokenMint)
 }
 
+async function swapJuneToSol(proxy: JunePoolProxy, user: web3.Keypair) {
+    const sentSignature = await proxy.swapJuneToSol({
+        amount: new BN(1_000_000_000),
+    });
+
+    console.log({
+        swapSignature: sentSignature,
+    })
+}
+
 async function main() {
     const connection = new web3.Connection(web3.clusterApiUrl("testnet"));
 
     // enable this to setup new pool
     // const payer = await initializeKeypair(connection);
     // await setup(connection, payer);
+
+    // Simulate swap function
+    const user = web3.Keypair.generate()
+    await airdropSolIfNeeded(user, connection)
+    await airdropSolIfNeeded(user, connection)
+    const tokenMint = new PublicKey(process.env.TOKEN_MINT || '');
+    await createAssociatedTokenAccount(
+        connection,
+        user,
+        tokenMint,
+        user.publicKey
+    );
+
+    const userWallet = new NodeWallet(user);
+    const provider_ = new AnchorProvider(connection, userWallet, {
+        preflightCommitment: "processed",
+        commitment: "processed"
+    });
+    const program = new Program(IDL, new PublicKey(PROGRAM_ID), provider_);
+    const proxy = new JunePoolProxy(program, userWallet);
+
+    // Swap SOL to JUNE
+    const swapSolSignature = await proxy.swapSolToJune({
+        lamports: new BN(100_000_000),
+    });
+    console.log(`Tx for swap from SOL to JUNE: ${swapSolSignature}`)
+
+    // Swap JUNE to SOL
+    const swapJuneSignature = await proxy.swapJuneToSol({
+        amount: new BN(1_000_000_000),
+    });
+    console.log(`Tx for swap from JUNE to SOL: ${swapJuneSignature}`)
 }
 
 main()
