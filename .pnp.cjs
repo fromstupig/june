@@ -29,6 +29,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["@coral-xyz/anchor", "npm:0.28.0"],\
+            ["@solana/spl-token", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.3.8"],\
             ["@types/bn.js", "npm:5.1.1"],\
             ["@types/chai", "npm:4.3.5"],\
             ["@types/mocha", "npm:9.1.1"],\
@@ -167,6 +168,44 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@solana/buffer-layout", "npm:4.0.1"],\
             ["buffer", "npm:6.0.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@solana/buffer-layout-utils", [\
+        ["npm:0.2.0", {\
+          "packageLocation": "./.yarn/cache/@solana-buffer-layout-utils-npm-0.2.0-149b69c46e-9284242245.zip/node_modules/@solana/buffer-layout-utils/",\
+          "packageDependencies": [\
+            ["@solana/buffer-layout-utils", "npm:0.2.0"],\
+            ["@solana/buffer-layout", "npm:4.0.1"],\
+            ["@solana/web3.js", "npm:1.77.3"],\
+            ["bigint-buffer", "npm:1.1.5"],\
+            ["bignumber.js", "npm:9.1.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@solana/spl-token", [\
+        ["npm:0.3.8", {\
+          "packageLocation": "./.yarn/cache/@solana-spl-token-npm-0.3.8-b18da3a966-01f4f87112.zip/node_modules/@solana/spl-token/",\
+          "packageDependencies": [\
+            ["@solana/spl-token", "npm:0.3.8"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.3.8", {\
+          "packageLocation": "./.yarn/__virtual__/@solana-spl-token-virtual-d8385ba7f4/0/cache/@solana-spl-token-npm-0.3.8-b18da3a966-01f4f87112.zip/node_modules/@solana/spl-token/",\
+          "packageDependencies": [\
+            ["@solana/spl-token", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.3.8"],\
+            ["@solana/buffer-layout", "npm:4.0.1"],\
+            ["@solana/buffer-layout-utils", "npm:0.2.0"],\
+            ["@solana/web3.js", null],\
+            ["@types/solana__web3.js", null],\
+            ["buffer", "npm:6.0.3"]\
+          ],\
+          "packagePeers": [\
+            "@solana/web3.js",\
+            "@types/solana__web3.js"\
           ],\
           "linkType": "HARD"\
         }]\
@@ -474,6 +513,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["bigint-buffer", "npm:1.1.5"],\
             ["bindings", "npm:1.5.0"],\
             ["node-gyp", "npm:9.4.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["bignumber.js", [\
+        ["npm:9.1.1", {\
+          "packageLocation": "./.yarn/cache/bignumber.js-npm-9.1.1-5929e8d8dc-ad243b7e2f.zip/node_modules/bignumber.js/",\
+          "packageDependencies": [\
+            ["bignumber.js", "npm:9.1.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -2157,6 +2205,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["root-workspace-0b6124", "workspace:."],\
             ["@coral-xyz/anchor", "npm:0.28.0"],\
+            ["@solana/spl-token", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.3.8"],\
             ["@types/bn.js", "npm:5.1.1"],\
             ["@types/chai", "npm:4.3.5"],\
             ["@types/mocha", "npm:9.1.1"],\

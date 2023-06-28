@@ -23,14 +23,6 @@ macro_rules! spl_to_sol_emit {
 }
 
 #[macro_export]
-macro_rules! set_paused_emit {
-  ($e:expr) => {
-    msg!("pool is paused");
-    emit!($e);
-  };
-}
-
-#[macro_export]
 macro_rules! set_swap_rate_emit {
   ($e:expr) => {
     msg!("swap rate updated");

@@ -16,6 +16,6 @@ cpi = ["no-entrypoint"]
 default = []
 
 [dependencies]
-anchor-lang = "0.28.0"
-anchor-spl = { version = "0.28.0", features = ["default"] }
-vipers = "2.0.4"
+anchor-lang = "0.24.0"
+anchor-spl = { version = "0.24.0", features = ["default"] }
+vipers = "2.0.6"

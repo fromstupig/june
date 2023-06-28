@@ -1,6 +1,10 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::{program::invoke, system_instruction};
-use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
+use anchor_spl::token;
+use anchor_spl::token::Mint;
+use anchor_spl::token::Token;
+use anchor_spl::token::TokenAccount;
+use anchor_spl::token::Transfer;
 use vipers::invariant;
 
 declare_id!("Es39nWkqB3pFEAaPFjq2UoiHpmQ2SqXjpxANrgvZzK7r");
@@ -40,7 +44,6 @@ pub mod june {
         )
     }
 
-    #[access_control(ctx.accounts.pool_account.when_not_paused())]
     pub fn add_liquidity(
         ctx: Context<AddLiquidity>,
         lamports: u64,
@@ -49,7 +52,6 @@ pub mod june {
         add_liquidity::exec(ctx, lamports, amount)
     }
 
-    #[access_control(ctx.accounts.pool_account.when_not_paused())]
     pub fn swap_sol_to_june(
         ctx: Context<SOLToSpl>,
         lamports: u64,
@@ -58,7 +60,6 @@ pub mod june {
     }
 
 
-    #[access_control(ctx.accounts.pool_account.when_not_paused())]
     pub fn swap_june_to_sol(
         ctx: Context<SplToSOL>,
         amount: u64,
@@ -71,12 +72,5 @@ pub mod june {
         rate: u64,
     ) -> Result<()> {
         set_swap_rate::exec(ctx, rate)
-    }
-
-    pub fn set_paused(
-        ctx: Context<SetPaused>,
-        paused: bool,
-    ) -> Result<()> {
-        set_paused::exec(ctx, paused)
     }
 }

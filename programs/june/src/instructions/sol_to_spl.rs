@@ -71,7 +71,7 @@ pub fn exec(
     june_amount,
   )?;
 
-  sol_to_spl_emit!(SOLToSplEvent { lamports, june_amount });
+  sol_to_spl_emit!(SOLToSplEvent { lamports, amount: june_amount });
 
   Ok(())
 }
