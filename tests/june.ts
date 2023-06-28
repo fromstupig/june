@@ -14,6 +14,39 @@ import {AnchorError, AnchorProvider, BN, Program, setProvider, web3, workspace} 
 import {createAssociatedTokenAccount, createMint, mintToChecked, TOKEN_PROGRAM_ID} from '@solana/spl-token';
 const SWAP_RATE = 10;
 
+async function generateUser(authority_: web3.Keypair, tokenMint: web3.PublicKey,
+                            connection_: web3.Connection) {
+  let user: Keypair = web3.Keypair.generate();
+  let userJuneTokenAccount: PublicKey;
+
+  const transferSolToUserTx = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: authority_.publicKey,
+        toPubkey: user.publicKey,
+        lamports: LAMPORTS_PER_SOL * 10,
+      })
+  );
+  await sendAndConfirmTransaction(connection_, transferSolToUserTx, [authority_]);
+
+  userJuneTokenAccount = await createAssociatedTokenAccount(
+      connection_,
+      user,
+      tokenMint,
+      user.publicKey
+  );
+
+  await mintToChecked(
+      connection_,
+      authority_,
+      tokenMint,
+      userJuneTokenAccount,
+      authority_,
+      1_000_000_000_000, // 1000 JUNE
+      9
+  );
+
+  return [user, userJuneTokenAccount];
+}
 describe('june', () => {
   const provider = AnchorProvider.env();
   setProvider(provider)
@@ -26,8 +59,6 @@ describe('june', () => {
   let payerJuneTokenAccount: PublicKey;
   let poolAccount: PublicKey;
   let poolJuneTokenAccount: PublicKey;
-  let user: Keypair = web3.Keypair.generate();
-  let userJuneTokenAccount: PublicKey;
 
   let programInstance;
 
@@ -54,32 +85,6 @@ describe('june', () => {
         payerJuneTokenAccount,
         payer,
         1_000_000_000_000_000, // 1M JUNE
-        9
-    );
-
-    const transferSolToUserTx = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: payer.publicKey,
-          toPubkey: user.publicKey,
-          lamports: LAMPORTS_PER_SOL * 10,
-        })
-    );
-    await sendAndConfirmTransaction(connection, transferSolToUserTx, [payer]);
-
-    userJuneTokenAccount = await createAssociatedTokenAccount(
-        provider.connection,
-        user,
-        juneToken,
-        user.publicKey
-    );
-
-    await mintToChecked(
-        provider.connection,
-        payer,
-        juneToken,
-        userJuneTokenAccount,
-        payer,
-        1_000_000_000_000, // 1000 JUNE
         9
     );
   });
@@ -229,6 +234,10 @@ describe('june', () => {
   });
 
   it('Only allow the owner to update swap rate', async () => {
+    let [user, _] = await generateUser(
+        payer, juneToken, connection
+    )
+
     try {
       await program.methods.setSwapRate(
           new BN(20)
@@ -289,6 +298,10 @@ describe('june', () => {
   });
 
   it('Allow others than owner to add liquidity', async () => {
+    let [user, userJuneTokenAccount] = await generateUser(
+        payer, juneToken, connection
+    )
+
     await program.methods.addLiquidity(
         new BN(1_000_000_000),
         new BN(10_000_000_000),
@@ -322,8 +335,12 @@ describe('june', () => {
 
 
   it('Must swap SOL for June successfully', async () => {
+    let [user, userJuneTokenAccount] = await generateUser(
+        payer, juneToken, connection
+    )
+
     let juneBalanceBeforeSwap = await connection.getTokenAccountBalance(userJuneTokenAccount);
-    expect(juneBalanceBeforeSwap.value.amount).to.be.equal('990000000000');
+    expect(juneBalanceBeforeSwap.value.amount).to.be.equal('1000000000000');
     await program.methods.swapSolToJune(
         new BN(1_000_000_000),
     ).accounts({
@@ -336,7 +353,7 @@ describe('june', () => {
     }).signers([user]).rpc();
 
     let juneBalanceAfterSwap = await connection.getTokenAccountBalance(userJuneTokenAccount);
-    expect(juneBalanceAfterSwap.value.amount).to.be.equal('1000000000000');
+    expect(juneBalanceAfterSwap.value.amount).to.be.equal('1010000000000');
     let tokenAmount = await connection.getTokenAccountBalance(poolJuneTokenAccount);
     expect(tokenAmount.value.amount).to.be.equal('110000000000');
     const poolAccountInfo = await programInstance.account["pool"].fetch(poolAccount);
@@ -345,6 +362,10 @@ describe('june', () => {
   });
 
   it('Must swap June for SOL successfully', async () => {
+    let [user, userJuneTokenAccount] = await generateUser(
+        payer, juneToken, connection
+    )
+
     let juneBalanceBeforeSwap = await connection.getTokenAccountBalance(userJuneTokenAccount);
     expect(juneBalanceBeforeSwap.value.amount).to.be.equal('1000000000000');
     await program.methods.swapJuneToSol(

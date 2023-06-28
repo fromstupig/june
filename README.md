@@ -13,6 +13,14 @@ Token Mint Address: `CG26EFdBr7DuBv91b39vm7vdBxdGhMjutT8wcm2BTaU`
 
 Note: Due to [unexpected issue](https://github.com/solana-labs/solana/issues/31960) related to test on Solana current latest version (1.16.1), this project has to be downgraded to Solana v1.14.18.
 
+## Test
+```
+anchor test
+```
+
+Passed tests
+
+![all tests](./test-cases.png)
 ## Demonstration
 This is a script which generated a new account on Solana testnet, and use this account to execute swap between SOL and JUNE. The result will display at console.
 
