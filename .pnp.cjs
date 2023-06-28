@@ -30,6 +30,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@coral-xyz/anchor", "npm:0.28.0"],\
             ["@solana/spl-token", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.3.8"],\
+            ["@solana/web3.js", "npm:1.77.3"],\
             ["@types/bn.js", "npm:5.1.1"],\
             ["@types/chai", "npm:4.3.5"],\
             ["@types/mocha", "npm:9.1.1"],\
@@ -199,7 +200,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@solana/spl-token", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.3.8"],\
             ["@solana/buffer-layout", "npm:4.0.1"],\
             ["@solana/buffer-layout-utils", "npm:0.2.0"],\
-            ["@solana/web3.js", null],\
+            ["@solana/web3.js", "npm:1.77.3"],\
             ["@types/solana__web3.js", null],\
             ["buffer", "npm:6.0.3"]\
           ],\
@@ -2206,6 +2207,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["root-workspace-0b6124", "workspace:."],\
             ["@coral-xyz/anchor", "npm:0.28.0"],\
             ["@solana/spl-token", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.3.8"],\
+            ["@solana/web3.js", "npm:1.77.3"],\
             ["@types/bn.js", "npm:5.1.1"],\
             ["@types/chai", "npm:4.3.5"],\
             ["@types/mocha", "npm:9.1.1"],\

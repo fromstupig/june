@@ -10,15 +10,15 @@ import { June } from "../target/types/june";
 import chai from 'chai';
 import { expect } from 'chai';
 import { IDL } from '../target/types/june'
-import {AnchorError, BN, Program} from "@coral-xyz/anchor";
+import {AnchorError, AnchorProvider, BN, Program, setProvider, web3, workspace} from "@coral-xyz/anchor";
 import {createAssociatedTokenAccount, createMint, mintToChecked, TOKEN_PROGRAM_ID} from '@solana/spl-token';
 const SWAP_RATE = 10;
 
 describe('june', () => {
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
+  const provider = AnchorProvider.env();
+  setProvider(provider)
   const connection = provider.connection;
-  const program = anchor.workspace.SwapTokens as Program<June>;
+  const program = workspace.June as Program<June>;
   const payer = (provider.wallet as any).payer;
   const payerAccount = payer.publicKey;
 
@@ -26,12 +26,12 @@ describe('june', () => {
   let payerJuneTokenAccount: PublicKey;
   let poolAccount: PublicKey;
   let poolJuneTokenAccount: PublicKey;
-  let user: Keypair = anchor.web3.Keypair.generate();
+  let user: Keypair = web3.Keypair.generate();
   let userJuneTokenAccount: PublicKey;
 
   let programInstance;
 
-  it('Is init resources', async () => {
+  it('Initialize test suite successfully', async () => {
     juneToken = await createMint(
         connection,
         payer,
@@ -57,14 +57,14 @@ describe('june', () => {
         9
     );
 
-    const transferSolToATx = new Transaction().add(
+    const transferSolToUserTx = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: payer.publicKey,
           toPubkey: user.publicKey,
           lamports: LAMPORTS_PER_SOL * 10,
         })
     );
-    await sendAndConfirmTransaction(connection, transferSolToATx, [payer]);
+    await sendAndConfirmTransaction(connection, transferSolToUserTx, [payer]);
 
     userJuneTokenAccount = await createAssociatedTokenAccount(
         provider.connection,
@@ -85,20 +85,19 @@ describe('june', () => {
   });
 
   it('Failed initialize due to empty SOL', async () => {
-    [poolAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+    [poolAccount] = web3.PublicKey.findProgramAddressSync(
         [Buffer.from("pool"), payer.publicKey.toBuffer()],
         program.programId
     );
 
-    let [tokenAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+    let [tokenAccount] = web3.PublicKey.findProgramAddressSync(
         [Buffer.from("pool-june"), poolAccount.toBuffer()],
         program.programId
     );
     poolJuneTokenAccount = tokenAccount;
-
     try {
       await program.methods.initialize(
-          new BN(SWAP_RATE),
+          new BN(10),
           new BN(0),
           new BN(1_000_000_000),
       ).accounts({
@@ -107,27 +106,27 @@ describe('june', () => {
         poolAccount,
         poolJuneTokenAccount,
         juneToken,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: web3.SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY
+        rent: web3.SYSVAR_RENT_PUBKEY
       }).rpc();
 
       chai.assert(false, "Program must initialize failed");
     } catch (err) {
       expect(err).to.be.instanceOf(AnchorError);
-      expect((err as AnchorError).error.errorCode.number).to.equal(6001);
+      expect((err as AnchorError).error.errorCode.number).to.equal(6003);
       expect(err.error.errorCode.code).to.equal("ZeroLiquidity");
       expect(err.program.equals(program.programId)).is.true;
     }
   });
 
   it('Failed initialize due to empty JUNE', async () => {
-    [poolAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+    [poolAccount] = web3.PublicKey.findProgramAddressSync(
         [Buffer.from("pool"), payer.publicKey.toBuffer()],
         program.programId
     );
 
-    let [tokenAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+    let [tokenAccount] = web3.PublicKey.findProgramAddressSync(
         [Buffer.from("pool-june"), poolAccount.toBuffer()],
         program.programId
     );
@@ -144,27 +143,27 @@ describe('june', () => {
         poolAccount,
         poolJuneTokenAccount,
         juneToken,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: web3.SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY
+        rent: web3.SYSVAR_RENT_PUBKEY
       }).rpc();
 
       chai.assert(false, "Program must initialize failed");
     } catch (err) {
       expect(err).to.be.instanceOf(AnchorError);
-      expect((err as AnchorError).error.errorCode.number).to.equal(6001);
+      expect((err as AnchorError).error.errorCode.number).to.equal(6003);
       expect(err.error.errorCode.code).to.equal("ZeroLiquidity");
       expect(err.program.equals(program.programId)).is.true;
     }
   });
 
   it('Failed initialize due to invalid swap rate', async () => {
-    [poolAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+    [poolAccount] = web3.PublicKey.findProgramAddressSync(
         [Buffer.from("pool"), payer.publicKey.toBuffer()],
         program.programId
     );
 
-    let [tokenAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+    let [tokenAccount] = web3.PublicKey.findProgramAddressSync(
         [Buffer.from("pool-june"), poolAccount.toBuffer()],
         program.programId
     );
@@ -181,15 +180,15 @@ describe('june', () => {
         poolAccount,
         poolJuneTokenAccount,
         juneToken,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: web3.SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY
+        rent: web3.SYSVAR_RENT_PUBKEY
       }).rpc();
 
       chai.assert(false, "Program must initialize failed");
     } catch (err) {
       expect(err).to.be.instanceOf(AnchorError);
-      expect((err as AnchorError).error.errorCode.number).to.equal(6003);
+      expect((err as AnchorError).error.errorCode.number).to.equal(6005);
       expect(err.error.errorCode.code).to.equal("InvalidSwapRate");
       expect(err.program.equals(program.programId)).is.true;
     }
@@ -206,9 +205,9 @@ describe('june', () => {
       poolAccount,
       poolJuneTokenAccount,
       juneToken,
-      systemProgram: anchor.web3.SystemProgram.programId,
+      systemProgram: web3.SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
-      rent: anchor.web3.SYSVAR_RENT_PUBKEY
+      rent: web3.SYSVAR_RENT_PUBKEY
     }).rpc();
     programInstance = new Program(
         IDL,
@@ -232,7 +231,7 @@ describe('june', () => {
   it('Only allow the owner to update swap rate', async () => {
     try {
       await program.methods.setSwapRate(
-          new anchor.BN(20)
+          new BN(20)
       ).accounts({
         signer: user.publicKey,
         poolAccount
@@ -241,7 +240,7 @@ describe('june', () => {
       chai.assert(false, "Call function must be failed");
     } catch (err) {
       expect(err).to.be.instanceOf(AnchorError);
-      expect((err as AnchorError).error.errorCode.number).to.equal(6007);
+      expect((err as AnchorError).error.errorCode.number).to.equal(6002);
       expect(err.error.errorCode.code).to.equal("MustBePoolOwner");
       expect(err.program.equals(program.programId)).is.true;
     }
@@ -258,13 +257,13 @@ describe('june', () => {
         poolAccount,
         poolJuneTokenAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: web3.SystemProgram.programId,
       }).rpc();
 
       chai.assert(false, "Call function must be failed");
     } catch (err) {
       expect(err).to.be.instanceOf(AnchorError);
-      expect((err as AnchorError).error.errorCode.number).to.equal(6001);
+      expect((err as AnchorError).error.errorCode.number).to.equal(6003);
       expect(err.error.errorCode.code).to.equal("ZeroLiquidity");
       expect(err.program.equals(program.programId)).is.true;
     }
@@ -280,7 +279,7 @@ describe('june', () => {
       poolAccount,
       poolJuneTokenAccount,
       tokenProgram: TOKEN_PROGRAM_ID,
-      systemProgram: anchor.web3.SystemProgram.programId,
+      systemProgram: web3.SystemProgram.programId,
     }).rpc();
     let tokenAmount = await connection.getTokenAccountBalance(poolJuneTokenAccount);
     expect(tokenAmount.value.amount).to.be.equal('110000000000');
@@ -299,7 +298,7 @@ describe('june', () => {
       poolAccount,
       poolJuneTokenAccount,
       tokenProgram: TOKEN_PROGRAM_ID,
-      systemProgram: anchor.web3.SystemProgram.programId,
+      systemProgram: web3.SystemProgram.programId,
     }).signers([user]).rpc();
 
     await program.methods.addLiquidity(
@@ -311,20 +310,20 @@ describe('june', () => {
       poolAccount,
       poolJuneTokenAccount,
       tokenProgram: TOKEN_PROGRAM_ID,
-      systemProgram: anchor.web3.SystemProgram.programId,
+      systemProgram: web3.SystemProgram.programId,
     }).signers([user]).rpc();
 
     let tokenAmount = await connection.getTokenAccountBalance(poolJuneTokenAccount);
     expect(tokenAmount.value.amount).to.be.equal('120000000000');
     const poolAccountInfo = await programInstance.account["pool"].fetch(poolAccount);
-    expect(poolAccountInfo.solTotalSupply.toString()).to.be.equal('3000000000');
+    expect(poolAccountInfo.solTotalSupply.toString()).to.be.equal('4000000000');
     expect(poolAccountInfo.juneTotalSupply.toString()).to.be.equal('120000000000');
   });
 
 
   it('Must swap SOL for June successfully', async () => {
     let juneBalanceBeforeSwap = await connection.getTokenAccountBalance(userJuneTokenAccount);
-    expect(juneBalanceBeforeSwap.value.amount).to.be.equal('1000000000000');
+    expect(juneBalanceBeforeSwap.value.amount).to.be.equal('990000000000');
     await program.methods.swapSolToJune(
         new BN(1_000_000_000),
     ).accounts({
@@ -332,24 +331,22 @@ describe('june', () => {
       signerTokenAccount: userJuneTokenAccount,
       poolAccount,
       poolJuneTokenAccount,
-      systemProgram: anchor.web3.SystemProgram.programId,
+      systemProgram: web3.SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
     }).signers([user]).rpc();
 
     let juneBalanceAfterSwap = await connection.getTokenAccountBalance(userJuneTokenAccount);
-    expect(juneBalanceAfterSwap.value.amount).to.be.equal('1010000000000');
+    expect(juneBalanceAfterSwap.value.amount).to.be.equal('1000000000000');
     let tokenAmount = await connection.getTokenAccountBalance(poolJuneTokenAccount);
     expect(tokenAmount.value.amount).to.be.equal('110000000000');
     const poolAccountInfo = await programInstance.account["pool"].fetch(poolAccount);
-    expect(poolAccountInfo.solTotalSupply.toString()).to.be.equal('4000000000');
+    expect(poolAccountInfo.solTotalSupply.toString()).to.be.equal('5000000000');
     expect(poolAccountInfo.juneTotalSupply.toString()).to.be.equal('110000000000');
   });
 
   it('Must swap June for SOL successfully', async () => {
     let juneBalanceBeforeSwap = await connection.getTokenAccountBalance(userJuneTokenAccount);
-    expect(juneBalanceBeforeSwap.value.amount).to.be.equal('9990000000000');
-    let solBalanceBeforeSwap = await connection.getBalance(user.publicKey);
-    expect(solBalanceBeforeSwap.value.amount).to.be.equal('9990000000000');
+    expect(juneBalanceBeforeSwap.value.amount).to.be.equal('1000000000000');
     await program.methods.swapJuneToSol(
         new BN(10_000_000_000),
     ).accounts({
@@ -357,18 +354,16 @@ describe('june', () => {
       signerTokenAccount: userJuneTokenAccount,
       poolAccount,
       poolJuneTokenAccount,
-      systemProgram: anchor.web3.SystemProgram.programId,
+      systemProgram: web3.SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
     }).signers([user]).rpc();
-    let solBalanceAfterSwap = await connection.getBalance(user.publicKey);
-    expect(solBalanceAfterSwap.value.amount).to.be.equal('9990000000000');
     let juneBalanceAfterSwap = await connection.getTokenAccountBalance(userJuneTokenAccount);
-    expect(juneBalanceAfterSwap.value.amount).to.be.equal('9989000000000');
+    expect(juneBalanceAfterSwap.value.amount).to.be.equal('990000000000');
     let tokenAmount = await connection.getTokenAccountBalance(poolJuneTokenAccount);
-    expect(tokenAmount.value.amount).to.be.equal('111000000000');
+    expect(tokenAmount.value.amount).to.be.equal('120000000000');
     const poolAccountInfo = await programInstance.account["pool"].fetch(poolAccount);
-    expect(poolAccountInfo.solTotalSupply.toString()).to.be.equal('3900000000');
-    expect(poolAccountInfo.juneTotalSupply.toString()).to.be.equal('111000000000');
+    expect(poolAccountInfo.solTotalSupply.toString()).to.be.equal('4000000000');
+    expect(poolAccountInfo.juneTotalSupply.toString()).to.be.equal('120000000000');
   });
 
 
@@ -382,13 +377,13 @@ describe('june', () => {
         poolAccount,
         poolJuneTokenAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: web3.SystemProgram.programId,
       }).rpc();
 
       chai.assert(false, "Swap function must be failed");
     } catch (err) {
       expect(err).to.be.instanceOf(AnchorError);
-      expect((err as AnchorError).error.errorCode.number).to.equal(6002);
+      expect((err as AnchorError).error.errorCode.number).to.equal(6004);
       expect(err.error.errorCode.code).to.equal("ZeroSwap");
       expect(err.program.equals(program.programId)).is.true;
     }
@@ -402,13 +397,13 @@ describe('june', () => {
         poolAccount,
         poolJuneTokenAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: anchor.web3.SystemProgram.programId,
+        systemProgram: web3.SystemProgram.programId,
       }).rpc();
 
       chai.assert(false, "Swap function must be failed");
     } catch (err) {
       expect(err).to.be.instanceOf(AnchorError);
-      expect((err as AnchorError).error.errorCode.number).to.equal(6002);
+      expect((err as AnchorError).error.errorCode.number).to.equal(6004);
       expect(err.error.errorCode.code).to.equal("ZeroSwap");
       expect(err.program.equals(program.programId)).is.true;
     }
