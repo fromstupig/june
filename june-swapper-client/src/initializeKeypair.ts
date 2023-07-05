@@ -20,6 +20,7 @@ export async function initializeKeypair(
   fs.appendFileSync(".env", `OWNER=${keypair.publicKey.toBase58()}` + '\r\n')
   process.env["OWNER"] = keypair.publicKey.toBase58()
   await airdropSolIfNeeded(keypair, connection)
+  await airdropSolIfNeeded(keypair, connection)
   return keypair
 }
 
