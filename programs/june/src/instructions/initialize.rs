@@ -53,7 +53,6 @@ pub fn exec(
   pool.swap_rate = swap_rate;
   pool.sol_total_supply = lamports;
   pool.june_total_supply = amount;
-  pool.paused = false;
 
   invoke(
     &system_instruction::transfer(

@@ -9,7 +9,6 @@ pub struct Pool {
     pub june_total_supply: u64,
     pub sol_total_supply: u64,
     pub swap_rate: u64,
-    pub paused: bool,
 }
 
 impl Pool {
