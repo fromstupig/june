@@ -75,6 +75,7 @@ async function addLiquidity(proxy: JunePoolProxy, juneToken: web3.PublicKey) {
     });
 
     const [poolAccount] = await proxy.getPoolAccount();
+    fs.appendFileSync('.env',`POOL_ACCOUNT=${poolAccount.toBase58()}` + '\r\n')
     const [poolJuneTokenAccount] = await proxy.getPoolJuneTokenAccount(poolAccount);
 
     const rv = {
@@ -84,7 +85,6 @@ async function addLiquidity(proxy: JunePoolProxy, juneToken: web3.PublicKey) {
     }
 
     console.log(rv);
-    fs.appendFileSync('.env',`POOL_ACCOUNT=${poolAccount.toBase58()}` + '\r\n')
     return rv;
 }
 

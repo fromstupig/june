@@ -74,7 +74,7 @@ export class JunePoolProxy {
         );
 
         const poolAccountInfo =
-            await this.program.account["pool"].fetch(process.env.POOL_ACCOUNT || '');
+            await this.program.account["pool"].fetch(poolAccount.toBase58());
 
         const signerTokenAccount = await getAssociatedTokenAddress(
             poolAccountInfo.juneToken as PublicKey,
