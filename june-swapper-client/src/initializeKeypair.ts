@@ -18,7 +18,7 @@ export async function initializeKeypair(
   }
 
   console.log("Owner:", keypair.publicKey.toBase58())
-  fs.appendFileSync(".env", `OWNER=${keypair.publicKey.toBase58()}`)
+  fs.appendFileSync(".env", `OWNER=${keypair.publicKey.toBase58()}` + '\r\n')
   await airdropSolIfNeeded(keypair, connection)
   return keypair
 }
