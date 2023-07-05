@@ -76,6 +76,7 @@ async function addLiquidity(proxy: JunePoolProxy, juneToken: web3.PublicKey) {
 
     const [poolAccount] = await proxy.getPoolAccount();
     fs.appendFileSync('.env',`POOL_ACCOUNT=${poolAccount.toBase58()}` + '\r\n')
+    process.env["POOL_ACCOUNT"] = poolAccount.toBase58()
     const [poolJuneTokenAccount] = await proxy.getPoolJuneTokenAccount(poolAccount);
 
     const rv = {
@@ -103,6 +104,7 @@ async function setup(connection: web3.Connection, payer: web3.Keypair) {
         9
     );
     fs.appendFileSync('.env',`TOKEN_MINT=${juneTokenMint.toBase58()}` + '\r\n')
+    process.env["TOKEN_MINT"] = juneTokenMint.toBase58()
 
     const authorityWallet = new NodeWallet(payer);
     const provider_ = new AnchorProvider(connection, authorityWallet, {
