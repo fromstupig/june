@@ -11,14 +11,14 @@ export async function initializeKeypair(
   if (!process.env.PRIVATE_KEY) {
     console.log("Creating .env file")
     keypair = web3.Keypair.generate()
-    fs.writeFileSync(".env", `PRIVATE_KEY=[${keypair.secretKey.toString()}]`)
   } else {
     const secret = JSON.parse(process.env.PRIVATE_KEY ?? "") as number[]
     const secretKey = Uint8Array.from(secret)
     keypair = web3.Keypair.fromSecretKey(secretKey)
   }
 
-  console.log("PublicKey:", keypair.publicKey.toBase58())
+  console.log("Owner:", keypair.publicKey.toBase58())
+  fs.writeFileSync(".env", `OWNER=${keypair.publicKey.toBase58()}`)
   await airdropSolIfNeeded(keypair, connection)
   return keypair
 }

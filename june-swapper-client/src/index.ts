@@ -1,9 +1,8 @@
-import {airdropSolIfNeeded, initializeKeypair} from "./initializeKeypair"
+import { airdropSolIfNeeded, initializeKeypair } from "./initializeKeypair"
 import * as web3 from "@solana/web3.js"
 import {
     createAssociatedTokenAccount,
     createMint,
-    getAssociatedTokenAddress,
     getOrCreateAssociatedTokenAccount,
     mintToChecked
 } from "@solana/spl-token";
@@ -12,7 +11,7 @@ import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import {AnchorProvider, BN, Program} from "@coral-xyz/anchor";
 import {IDL} from "./idl";
 import {JunePoolProxy} from "./junePoolProxy";
-import * as cluster from "cluster";
+import * as fs from "fs";
 
 const PROGRAM_ID = process.env.PROGRAM_ID || '';
 
@@ -85,6 +84,7 @@ async function addLiquidity(proxy: JunePoolProxy, juneToken: web3.PublicKey) {
     }
 
     console.log(rv);
+    fs.writeFileSync('.env',`POOL_ACCOUNT=${poolAccount.toBase58()}`)
     return rv;
 }
 
@@ -102,6 +102,7 @@ async function setup(connection: web3.Connection, payer: web3.Keypair) {
         1_000_000_000_000_000,
         9
     );
+    fs.writeFileSync('.env',`TOKEN_MINT=${juneTokenMint.toBase58()}`)
 
     const authorityWallet = new NodeWallet(payer);
     const provider_ = new AnchorProvider(connection, authorityWallet, {
@@ -124,8 +125,8 @@ async function main() {
     const connection = new web3.Connection(web3.clusterApiUrl("testnet"));
 
     // enable this to setup new pool
-    // const payer = await initializeKeypair(connection);
-    // await setup(connection, payer);
+    const payer = await initializeKeypair(connection);
+    await setup(connection, payer);
 
     // Simulate swap function
     const user = web3.Keypair.generate()
